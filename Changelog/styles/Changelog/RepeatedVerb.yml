@@ -1,0 +1,84 @@
+# Under Added, Changed, Deprecated, or Removed, the heading is already the
+# verb, so "Added support for X" is "Support for X". Fixed is left alone:
+# without its verb, a fix reads as the bug.
+extends: script
+# Vale formats a script rule's message before its fix, so the script writes
+# the fix into the message itself.
+message: "The section heading already says it: drop '%s'."
+level: suggestion
+scope: raw
+action:
+  name: edit
+  params:
+    - regex
+    - '^\S+\s*'
+    - ''
+    - capitalize
+script: |
+  text := import("text")
+
+  verbs := {
+    Added: "Add|Adds|Added|Adding",
+    Changed: "Change|Changes|Changed|Changing",
+    Deprecated: "Deprecate|Deprecates|Deprecated|Deprecating",
+    Removed: "Remove|Removes|Removed|Removing"
+  }
+
+  matches := []
+  section := ""
+  fenced := false
+  offset := 0
+  for line in text.split(scope, "\n") {
+    if text.re_match("^\\s*(```|~~~)", line) {
+      fenced = !fenced
+    } else if !fenced && text.re_match("^#{1,6}\\s", line) {
+      h := text.re_find("^###\\s+(\\w+)\\s*$", line)
+      section = is_undefined(h) ? "" : h[0][1].text
+    } else if !fenced && !is_undefined(verbs[section]) {
+      pat := "^\\s*[-*+]\\s+((?i:" + verbs[section] + ")\\b(?:\\s+\\w\\S*)?)"
+      m := text.re_find(pat, line)
+      if !is_undefined(m) {
+        g := m[0][1]
+        words := text.split_n(g.text, " ", 2)
+        match := {begin: offset + g.begin, end: offset + g.end}
+        if len(words) == 2 {
+          rest := text.trim_space(words[1])
+          fix := text.to_upper(rest[:1]) + rest[1:]
+          match.message = "The section heading already says it: '%s' should be '" + fix + "'."
+        }
+        matches = append(matches, match)
+      }
+    }
+    offset += len(line) + 1
+  }
+
+tests:
+  - name: fires
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### Added
+
+      - Added support for YAML.
+      - Add `--json`.
+
+      ### Removed
+
+      - Removed the legacy API.
+    want: |
+      5:3:Changelog.RepeatedVerb:The section heading already says it: 'Added support' should be 'Support'.
+      6:3:Changelog.RepeatedVerb:The section heading already says it: drop 'Add'.
+      10:3:Changelog.RepeatedVerb:The section heading already says it: 'Removed the' should be 'The'.
+  - name: clean
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### Added
+
+      - Support for YAML.
+
+      ### Fixed
+
+      - Fixed a crash on an empty config.
+      - Removed a stray debug message.
+    want: ""

@@ -1,0 +1,37 @@
+# Changes are grouped under six headings and no others. Names with a clear
+# match are ChangeTypeAlias, which carries the fix; this catches the rest.
+extends: existence
+message: "'%s' isn't a change type. Use Added, Changed, Deprecated, Removed, Fixed, or Security."
+link: https://keepachangelog.com/en/1.1.0/#types
+level: error
+scope: heading.h3
+nonword: true
+raw:
+  - '^(?!(?:Added|Changed|Deprecated|Removed|Fixed|Security)$)'
+  - '(?!(?i:add|adds|addition|additions|new|new features?|features?'
+  - '|change|changes|breaking changes?|updated?|updates'
+  - '|deprecate|deprecation|deprecations|remove|removal|removals|deleted'
+  - '|fix|fixes|bugs?|bug ?fix|bug ?fixes|fixed bugs'
+  - '|security fix(?:es)?|security updates?|vulnerabilities'
+  - '|added|changed|deprecated|removed|fixed|security):?$)'
+  - '.+$'
+
+tests:
+  - name: fires
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### Improvements
+
+      ### Docs
+    want: |
+      3:5:Changelog.ChangeType:'Improvements' isn't a change type. Use Added, Changed, Deprecated, Removed, Fixed, or Security.
+      5:5:Changelog.ChangeType:'Docs' isn't a change type. Use Added, Changed, Deprecated, Removed, Fixed, or Security.
+  - name: clean
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### Added
+
+      ### Bug fixes
+    want: ""

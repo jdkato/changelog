@@ -1,0 +1,24 @@
+# "Finally" says the change was overdue, which is a note about the past, not
+# the release. Drop it.
+extends: existence
+message: "'%s' says the change was overdue. Drop it."
+level: suggestion
+ignorecase: true
+action:
+  name: remove
+tokens:
+  - '(?<![/-])finally(?![/,-]| (?:block|clause|statement)s?\b)'
+  - at long last
+  - at last
+
+tests:
+  - name: fires
+    input: |
+      You can finally export to PDF.
+    want: |
+      1:9:ReleaseNotes.Finally:'finally' says the change was overdue. Drop it.
+  - name: clean
+    input: |
+      You can now export to PDF. Cleanup moved into a try/finally, and the
+      finally block runs on every exit. Finally, the docs moved.
+    want: ""

@@ -1,0 +1,29 @@
+# Calling a change easy is a promise the reader may not find true. Say what
+# the steps are instead and let them judge. "Easier" compares, so it stays.
+extends: existence
+message: "'%s' is the reader's call to make. Show the steps instead."
+link: https://developers.google.com/style/word-list#easy
+level: suggestion
+ignorecase: true
+tokens:
+  - easy
+  - easily
+  - effortless
+  - effortlessly
+  - painless
+  - painlessly
+  - trivial
+  - trivially
+  - straightforward
+
+tests:
+  - name: fires
+    input: |
+      Migrating is easy and the new API is straightforward.
+    want: |
+      1:14:ReleaseNotes.Easy:'easy' is the reader's call to make. Show the steps instead.
+      1:38:ReleaseNotes.Easy:'straightforward' is the reader's call to make. Show the steps instead.
+  - name: clean
+    input: |
+      Migrating takes two steps: update the version, then run the codemod.
+    want: ""

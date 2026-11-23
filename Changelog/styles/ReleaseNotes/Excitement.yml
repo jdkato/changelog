@@ -1,0 +1,21 @@
+# Release notes report what changed. How the team feels about it is not
+# something a reader can use, and it reads as marketing.
+extends: existence
+message: "Cut '%s' and lead with the change itself."
+level: warning
+ignorecase: true
+tokens:
+  - '(?:we|I)(?:[''’]re| are|[''’]m| am) (?:so |very |really |super |incredibly )?(?:excited|thrilled|delighted|pleased|happy|proud|stoked|glad)'
+  - '(?:excited|thrilled|delighted|pleased|happy|proud|stoked|glad) to (?:announce|share|introduce|release|present|unveil|bring you)'
+
+tests:
+  - name: fires
+    input: |
+      We're thrilled to announce version 2.0. I am so excited about it.
+    want: |
+      1:1:ReleaseNotes.Excitement:Cut 'We're thrilled' and lead with the change itself.
+      1:41:ReleaseNotes.Excitement:Cut 'I am so excited' and lead with the change itself.
+  - name: clean
+    input: |
+      Version 2.0 adds a JSON output format.
+    want: ""

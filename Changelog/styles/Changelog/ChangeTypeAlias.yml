@@ -1,0 +1,55 @@
+# The usual other names for the six change types, each with the one it means.
+# A name that could mean two types, such as Improvements, is left to ChangeType.
+extends: substitution
+message: "Use '%s', not '%s': it's one of the six change types."
+link: https://keepachangelog.com/en/1.1.0/#types
+level: error
+scope: heading.h3
+ignorecase: true
+nonword: true
+action:
+  name: replace
+swap:
+  '^(?:add|adds|addition|additions|new|new features?|features?):?$': Added
+  '^(?:change|changes|breaking changes?|updated?|updates):?$': Changed
+  '^(?:deprecate|deprecation|deprecations):?$': Deprecated
+  '^(?:remove|removal|removals|deleted):?$': Removed
+  '^(?:fix|fixes|bugs?|bug ?fix|bug ?fixes|fixed bugs):?$': Fixed
+  '^(?:security fix(?:es)?|security updates?|vulnerabilities):?$': Security
+  '^added:?$': Added
+  '^changed:?$': Changed
+  '^deprecated:?$': Deprecated
+  '^removed:?$': Removed
+  '^fixed:?$': Fixed
+  '^security:?$': Security
+
+tests:
+  - name: fires
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### New Features
+
+      ### Bug Fixes
+
+      ### Breaking Changes
+
+      ### fixed
+
+      ### Added:
+    want: |
+      3:5:Changelog.ChangeTypeAlias:Use 'Added', not 'New Features': it's one of the six change types.
+      5:5:Changelog.ChangeTypeAlias:Use 'Fixed', not 'Bug Fixes': it's one of the six change types.
+      7:5:Changelog.ChangeTypeAlias:Use 'Changed', not 'Breaking Changes': it's one of the six change types.
+      9:5:Changelog.ChangeTypeAlias:Use 'Fixed', not 'fixed': it's one of the six change types.
+      11:5:Changelog.ChangeTypeAlias:Use 'Added', not 'Added:': it's one of the six change types.
+  - name: clean
+    input: |
+      ## [1.0.0] - 2017-06-20
+
+      ### Added
+
+      ### Fixed
+
+      ### Security
+    want: ""

@@ -1,0 +1,27 @@
+# Words that tell the reader a step is nothing. When it isn't nothing for
+# them, the word makes it worse. "Just" counts only before an instruction.
+extends: existence
+message: "Drop '%s': it tells the reader this is simple."
+link: https://developers.google.com/style/word-list#simple
+level: suggestion
+ignorecase: true
+action:
+  name: remove
+tokens:
+  - '(?<!-)simply(?!-)'
+  - 'just(?= (?:run|use|add|call|set|install|pass|type|click|import|write|change|restart|update|upgrade|enable|disable|copy|drop|put|replace|rename|create|edit|remove|delete|need to)\b)'
+  - merely
+  - obviously
+  - of course
+
+tests:
+  - name: fires
+    input: |
+      To upgrade, simply run the installer. Just restart afterward.
+    want: |
+      1:13:ReleaseNotes.Simply:Drop 'simply': it tells the reader this is simple.
+      1:39:ReleaseNotes.Simply:Drop 'Just': it tells the reader this is simple.
+  - name: clean
+    input: |
+      To upgrade, run the installer. It's just as fast as before.
+    want: ""

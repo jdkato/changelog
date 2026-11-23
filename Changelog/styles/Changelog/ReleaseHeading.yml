@@ -1,0 +1,46 @@
+# Each release is a level-two heading: the version in brackets, a hyphen, and
+# the release date. The one heading without a date is [Unreleased].
+extends: existence
+message: "'%s' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'."
+link: https://keepachangelog.com/en/1.1.0/#principles
+level: error
+scope: raw
+nonword: true
+raw:
+  - '(?m)(?<=^##[ \t]+)'
+  - '(?!\[?v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?\]?(?:\([^)\s]*\))?[ \t]+-[ \t]+\S)'
+  - '(?!\[?Unreleased\]?(?:\([^)\s]*\))?[ \t]*$)'
+  - '\S[^\n]*?(?=[ \t]*$)'
+
+tests:
+  - name: fires
+    input: |
+      # Changelog
+
+      ## Version 1.2.0
+
+      ## [1.1.0]
+
+      ## [1.0.0] (2017-06-20)
+
+      ## [1.0] - 2017-06-01
+
+      ## [unreleased]
+    want: |
+      3:4:Changelog.ReleaseHeading:'Version 1.2.0' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+      5:4:Changelog.ReleaseHeading:'[1.1.0]' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+      7:4:Changelog.ReleaseHeading:'[1.0.0] (2017-06-20)' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+      9:4:Changelog.ReleaseHeading:'[1.0] - 2017-06-01' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+      11:4:Changelog.ReleaseHeading:'[unreleased]' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+  - name: clean
+    input: |
+      # Changelog
+
+      ## [Unreleased]
+
+      ## [1.1.0] - 2019-02-15
+
+      ## [1.0.0-rc.1](https://example.com/compare/v0.3.0...v1.0.0-rc.1) - 2017-06-20
+
+      ## [0.3.0] - 2015-12-03 [YANKED]
+    want: ""

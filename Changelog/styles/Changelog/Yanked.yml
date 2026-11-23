@@ -1,0 +1,34 @@
+# A release that was pulled keeps its heading, with [YANKED] after the date,
+# in capitals and in brackets so it's hard to miss.
+extends: existence
+message: "Mark a pulled release '[YANKED]', not '%s'."
+link: https://keepachangelog.com/en/1.1.0/#yanked
+level: error
+scope: raw
+nonword: true
+action:
+  name: replace
+  params:
+    - '[YANKED]'
+raw:
+  - '(?m)(?<=^##[ \t]+\S[^\n]*)'
+  - '(?:\[(?!YANKED\])(?i:yanked)\]|\((?i:yanked)\)|(?<![\[(])\b(?i:yanked)\b(?![\])]))'
+
+tests:
+  - name: fires
+    input: |
+      ## [1.0.1] - 2017-06-21 (yanked)
+
+      ## [1.0.0] - 2017-06-20 YANKED
+
+      ## [0.9.0] - 2017-06-01 [Yanked]
+    want: |
+      1:25:Changelog.Yanked:Mark a pulled release '[YANKED]', not '(yanked)'.
+      3:25:Changelog.Yanked:Mark a pulled release '[YANKED]', not 'YANKED'.
+      5:25:Changelog.Yanked:Mark a pulled release '[YANKED]', not '[Yanked]'.
+  - name: clean
+    input: |
+      ## [1.0.1] - 2017-06-21 [YANKED]
+
+      This release was yanked from the registry.
+    want: ""

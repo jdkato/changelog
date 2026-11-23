@@ -1,0 +1,25 @@
+# An exclamation point asks the reader to be excited. A release note states
+# the change and lets it speak.
+extends: existence
+message: "End the sentence with a period, not '%s'."
+link: https://developers.google.com/style/periods#exclamation-points
+level: warning
+nonword: true
+action:
+  name: replace
+  params:
+    - '.'
+raw:
+  - '(?<=[\w)"”’])!+(?=\s|$)'
+
+tests:
+  - name: fires
+    input: |
+      Dark mode is here! Try it now!!
+    want: |
+      1:18:ReleaseNotes.Exclamation:End the sentence with a period, not '!'.
+      1:30:ReleaseNotes.Exclamation:End the sentence with a period, not '!!'.
+  - name: clean
+    input: |
+      Dark mode is here. The `!=` operator and `!important` are unchanged.
+    want: ""

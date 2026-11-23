@@ -1,0 +1,31 @@
+# A changelog is for people, so an entry says what changed. A pull request
+# number or a commit hash can follow the words but can't replace them.
+extends: existence
+message: "'%s' is only a reference. Say what changed, and keep the link after it."
+link: https://keepachangelog.com/en/1.1.0/#principles
+level: warning
+scope: list
+nonword: true
+raw:
+  - '^(?:[(\[]?(?:#\d+|GH-\d+|!\d+'
+  - '|(?=[0-9a-f]*\d)[0-9a-f]{7,40}'
+  - '|https?://\S+/(?:pull|pulls|issues|commit|commits|merge_requests)/\S+'
+  - ')[)\]]?[,;]?[ \t]*)+\.?$'
+
+tests:
+  - name: fires
+    input: |
+      - #123
+      - [#124](https://example.com/pull/124)
+      - 9fceb02
+      - (#125, #126)
+    want: |
+      1:3:Changelog.BareReference:'#123' is only a reference. Say what changed, and keep the link after it.
+      2:4:Changelog.BareReference:'#124' is only a reference. Say what changed, and keep the link after it.
+      3:3:Changelog.BareReference:'9fceb02' is only a reference. Say what changed, and keep the link after it.
+      4:3:Changelog.BareReference:'(#125, #126)' is only a reference. Say what changed, and keep the link after it.
+  - name: clean
+    input: |
+      - Fix the crash on an empty config ([#123](https://example.com/pull/123)).
+      - Deface the logo.
+    want: ""

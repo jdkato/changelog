@@ -1,0 +1,33 @@
+# A release heading brackets its version so the version can link to the diff
+# against the release before it.
+extends: existence
+message: "Bracket the version so it can link to its diff: '%s' should be '%s'."
+link: https://keepachangelog.com/en/1.1.0/#principles
+level: warning
+scope: raw
+nonword: true
+action:
+  name: edit
+  params:
+    - [prefix, '[']
+    - [suffix, ']']
+raw:
+  - '(?m)(?<=^##[ \t]+)'
+  - '(?:v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?|Unreleased)'
+  - '(?=[ \t]|$)'
+
+tests:
+  - name: fires
+    input: |
+      ## Unreleased
+
+      ## 1.0.0 - 2017-06-20
+    want: |
+      1:4:Changelog.VersionLink:Bracket the version so it can link to its diff: 'Unreleased' should be '[Unreleased]'.
+      3:4:Changelog.VersionLink:Bracket the version so it can link to its diff: '1.0.0' should be '[1.0.0]'.
+  - name: clean
+    input: |
+      ## [Unreleased]
+
+      ## [1.0.0](https://example.com/compare/v0.3.0...v1.0.0) - 2017-06-20
+    want: ""

@@ -1,0 +1,20 @@
+fixtures/CHANGELOG.md:5:4:Changelog.VersionLink:Bracket the version so it can link to its diff: 'Unreleased' should be '[Unreleased]'.
+fixtures/CHANGELOG.md:9:3:Changelog.RepeatedVerb:The section heading already says it: 'Added support' should be 'Support'.
+fixtures/CHANGELOG.md:11:5:Changelog.VersionPrefix:Drop the 'v': 'v2.1.0' should be '2.1.0'.
+fixtures/CHANGELOG.md:13:1:ReleaseNotes.Excitement:Cut 'We're thrilled' and lead with the change itself.
+fixtures/CHANGELOG.md:13:45:ReleaseNotes.Finally:'finally' says the change was overdue. Drop it.
+fixtures/CHANGELOG.md:13:66:ReleaseNotes.Exclamation:End the sentence with a period, not '!'.
+fixtures/CHANGELOG.md:15:5:Changelog.ChangeTypeAlias:Use 'Added', not 'New Features': it's one of the six change types.
+fixtures/CHANGELOG.md:17:18:ReleaseNotes.Simply:Drop 'Just': it tells the reader this is simple.
+fixtures/CHANGELOG.md:17:55:ReleaseNotes.Easy:'easy' is the reader's call to make. Show the steps instead.
+fixtures/CHANGELOG.md:19:5:Changelog.ChangeType:'Improvements' isn't a change type. Use Added, Changed, Deprecated, Removed, Fixed, or Security.
+fixtures/CHANGELOG.md:21:3:Changelog.Vague:'Various improvements' says nothing a reader can act on. Name what changed.
+fixtures/CHANGELOG.md:25:3:Changelog.BareReference:'#412' is only a reference. Say what changed, and keep the link after it.
+fixtures/CHANGELOG.md:26:32:ReleaseNotes.Blame:'was user error' puts the problem on a person. Say what the software did and what changed.
+fixtures/CHANGELOG.md:26:48:ReleaseNotes.Blame:'users were calling it wrong' puts the problem on a person. Say what the software did and what changed.
+fixtures/CHANGELOG.md:28:4:Changelog.VersionLink:Bracket the version so it can link to its diff: '2.0.0' should be '[2.0.0]'.
+fixtures/CHANGELOG.md:32:3:Changelog.RepeatedVerb:The section heading already says it: 'Removed the' should be 'The'.
+fixtures/CHANGELOG.md:34:4:Changelog.ReleaseHeading:'[1.9.0] (2024-01-15)' isn't a release heading. Write '[1.2.3] - YYYY-MM-DD', or '[Unreleased]'.
+fixtures/CHANGELOG.md:38:3:Changelog.Vague:'Bug fixes' says nothing a reader can act on. Name what changed.
+fixtures/CHANGELOG.md:40:14:Changelog.DateFormat:Write the release date as YYYY-MM-DD, not '12/20/2023'.
+fixtures/CHANGELOG.md:46:25:Changelog.Yanked:Mark a pulled release '[YANKED]', not '(yanked)'.

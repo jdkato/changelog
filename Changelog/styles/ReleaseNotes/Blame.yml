@@ -1,0 +1,33 @@
+# A note about a fix describes what the software did and what it does now,
+# not who held it wrong.
+extends: existence
+message: "'%s' puts the problem on a person. Say what the software did and what changed."
+link: https://developers.google.com/tech-writing/error-messages/set-tone#dont_blame_the_user
+level: warning
+ignorecase: true
+tokens:
+  - '(?:was|is|it[''’]s|as|due to|caused by|blame) (?:a |an )?user error'
+  - RTFM
+  - '(?:your|the user[''’]s|the users[''’]) (?:fault|mistake)'
+  - '(?:you|users?|people) (?:were|was|are) (?:using|calling|configuring|doing) (?:it|this|that|\w+) (?:wrong|wrongly|incorrectly|improperly)'
+  - '(?:incorrect|improper|wrong|bad|invalid) (?:usage|use) by (?:users?|you|people)'
+  - '(?:if|when) you (?:misuse|misused|abuse|abused|misconfigure|misconfigured)'
+  - '(?:users?|you|people) (?:who|that) (?:didn[''’]t|did not|failed to|forgot to|never) (?:read|follow|update|check|configure)'
+  - '(?:should have|should[''’]ve) (?:read|known|checked)'
+  - 'as (?:was )?clearly (?:documented|stated|explained)'
+  - '(?:careless|lazy|clueless) (?:users?|developers?|people|contributors?)'
+  - '(?:someone|somebody) (?:broke|messed up)'
+
+tests:
+  - name: fires
+    input: |
+      The crash was user error: users were calling it wrong, as clearly documented.
+    want: |
+      1:11:ReleaseNotes.Blame:'was user error' puts the problem on a person. Say what the software did and what changed.
+      1:27:ReleaseNotes.Blame:'users were calling it wrong' puts the problem on a person. Say what the software did and what changed.
+      1:56:ReleaseNotes.Blame:'as clearly documented' puts the problem on a person. Say what the software did and what changed.
+  - name: clean
+    input: |
+      The parser crashed on an empty config file. It now reports the missing key.
+      Exit codes: 1 (user error), 2 (internal error).
+    want: ""

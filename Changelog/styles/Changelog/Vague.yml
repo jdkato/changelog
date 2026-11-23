@@ -1,0 +1,32 @@
+# An entry that could be in any release tells the reader nothing. Name the
+# thing that changed, so someone deciding whether to upgrade can.
+extends: existence
+message: "'%s' says nothing a reader can act on. Name what changed."
+link: https://keepachangelog.com/en/1.1.0/#log-diffs
+level: warning
+scope: list
+ignorecase: true
+tokens:
+  - '(?:various|misc|miscellaneous|minor|small|some|general|several|other|assorted)[ \t]+(?:bug[ \t]?fixes|fixes|improvements|changes|tweaks|updates|enhancements|cleanups?)'
+  - 'bug[ \t]?fixes and (?:performance[ \t]+|stability[ \t]+)?improvements'
+  - '(?<=^)(?:bug[ \t]?fixes|fixes|improvements|updates|changes|tweaks|cleanups?|refactoring|misc|miscellaneous|stability improvements|performance improvements|wip)(?=\.?$)'
+
+tests:
+  - name: fires
+    input: |
+      - Bug fixes.
+      - Various improvements to the parser.
+      - Minor changes
+      - Misc
+      - Bug fixes and performance improvements.
+    want: |
+      1:3:Changelog.Vague:'Bug fixes' says nothing a reader can act on. Name what changed.
+      2:3:Changelog.Vague:'Various improvements' says nothing a reader can act on. Name what changed.
+      3:3:Changelog.Vague:'Minor changes' says nothing a reader can act on. Name what changed.
+      4:3:Changelog.Vague:'Misc' says nothing a reader can act on. Name what changed.
+      5:3:Changelog.Vague:'Bug fixes and performance improvements' says nothing a reader can act on. Name what changed.
+  - name: clean
+    input: |
+      - Fix the crash when the config file is empty.
+      - Bug fixes in the YAML parser are listed under Fixed.
+    want: ""
