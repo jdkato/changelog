@@ -16,7 +16,7 @@ Requires Vale 3.21.0 or later.
 
 ```ini
 StylesPath = styles
-Packages = https://github.com/jdkato/changelog/releases/latest/download/Changelog.zip
+Packages = Changelog
 
 [**/CHANGELOG.md]
 BasedOnStyles = Changelog, ReleaseNotes
@@ -25,6 +25,10 @@ BasedOnStyles = Changelog, ReleaseNotes
 ```console
 $ vale sync
 ```
+
+`Changelog` is in the [package library](https://vale.sh/explorer), so the
+name is enough. To pin a version, give its release URL instead:
+`https://github.com/jdkato/changelog/releases/download/<version>/Changelog.zip`.
 
 `Changelog` is the format and is the one to turn on. `ReleaseNotes` is an
 opinion about tone you can take or leave, and it works on its own for
